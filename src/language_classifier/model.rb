@@ -25,9 +25,13 @@ module LanguageClassifier
     # @param [String] text The text to predict the label of
     # @return [Hash] A hash with each label's probability
     def predict(text)
-      tokens = parse_tokens(text)
+      tokens = @tokenizer.tokenize(text)
       scores = {}
-      @data.each_key { |lab| scores[lab] = probability_of_label(tokens, lab) }
+
+      @data.each_key do |label|
+        scores[label] = probability_tokens_are_label(tokens, label)
+      end
+
       scores
     end
 
@@ -39,8 +43,8 @@ module LanguageClassifier
       label_scores.reduce { |acc, e| acc + e }.to_f / label_scores.size
     end
 
-    # Find the probability of a label across the data set of documents
-    def probability_of_label(tokens, label)
+    # Find the probability that a set of tokens belong to a given label
+    def probability_tokens_are_label(tokens, label)
       prob_label = @doc_counts[label].to_f / @doc_counts.values.reduce(:+).to_f
       label_scores = []
 
@@ -49,11 +53,6 @@ module LanguageClassifier
       end
 
       overall_score(label_scores)
-    end
-
-    # Parse tokens from given text using the provided tokenizer.
-    def parse_tokens(text)
-      @tokenizer.tokenize(text)
     end
 
     # Find the probability that a given token belongs to a given label
