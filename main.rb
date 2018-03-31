@@ -18,7 +18,7 @@ test_cases.each do |sentence, expected_output|
   puts '--'
   puts "Testing \"#{sentence}\""
 
-  prediction, confidence = model.predict(sentence).max_by { |key, val| val }
+  prediction, confidence = model.predict(sentence).max_by { |_key, val| val }
   confidence_percent = (confidence * 100.0).round(2)
 
   puts "Expected result: #{expected_output}"
