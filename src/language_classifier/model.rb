@@ -35,7 +35,8 @@ module LanguageClassifier
 
     # Reduce an array of probabilities to an overall probability
     def overall_score(label_scores)
-      label_scores.compact.reduce { |acc, e| acc + e }.to_f / label_scores.size
+      label_scores.compact!
+      label_scores.reduce { |acc, e| acc + e }.to_f / label_scores.size
     end
 
     # Find the probability of a label across the data set of documents
