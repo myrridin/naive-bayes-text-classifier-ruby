@@ -1,14 +1,16 @@
+require_relative('tokenizer/basic')
+
 module LanguageClassifier
   # Model defines a language classifier model which can be trained and used to
   # make predictions regarding the language of text
   class Model
-    attr_reader :data
-    attr_reader :doc_counts
+    attr_reader :data, :doc_counts, :tokenizer
 
     # Initialize the model variables
-    def initialize
+    def initialize(tokenizer: LanguageClassifier::Tokenizer::Basic)
       @data = Hash.new { |hash, key| hash[key] = Hash.new(0) }
       @doc_counts = Hash.new(0)
+      @tokenizer = tokenizer.new
     end
 
     # Train the model with a given document's text and label
@@ -50,11 +52,9 @@ module LanguageClassifier
       overall_score(label_scores)
     end
 
-    # Parse tokens from given text. The current implementation strips non-word
-    # characters and splits on whitespace characters
+    # Parse tokens from given text using the provided tokenizer.
     def parse_tokens(text)
-      text.downcase.gsub(/\W/, ' ').gsub(/\s+/, ' ').strip.split(/\s/)
-          .reject { |token| token.length < 3 }.uniq
+      tokenizer.tokenize(text)
     end
 
     # Find the probability that a given token belongs to a given label

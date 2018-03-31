@@ -1,4 +1,4 @@
-require_relative 'src/model'
+require_relative 'src/language_classifier/model'
 
 model = LanguageClassifier::Model.new
 
